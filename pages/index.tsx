@@ -55,7 +55,7 @@ const Home: NextPage = () => {
           </ul>
         </div>
 
-        <div>
+        <div className={styles.content}>
           {pageContent ? (
             pageContent.map((block, i) => <NotionBlock key={i} block={block} />)
           ) : (
