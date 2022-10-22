@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+}
+
+.sidebar {
+  width: 40%;
+  border-right: 1px solid #000;
+  padding: 1em;
+  box-sizing: border-box;
+}
+
+.list {
+  > li {
+    cursor: pointer;
+    &:hover {
+      background: rgba(#ccc, .4)
+    }
+  }
+}

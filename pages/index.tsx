@@ -1,21 +1,26 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useNotion } from "../hooks/useNotion";
-import styles from "../styles/Home.module.css";
-import { PageItem } from "./api/database";
+import styles from "../styles/Home.module.scss";
+import { PageItem } from "./api/pages";
 
 const Home: NextPage = () => {
-  const { queryDatabase } = useNotion();
+  const { queryDatabase, retrievePage } = useNotion();
   const [list, setList] = useState<PageItem[]>([]);
+  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
 
   const query = useCallback(async () => {
     const data = await queryDatabase();
     console.log(data, "data");
     setList(data as unknown as PageItem[]);
   }, [queryDatabase]);
+
+  const onClickItem = async (pageId: string) => {
+    // setSelectedUrl(url);
+    const data = await retrievePage(pageId);
+    console.log(data);
+  };
 
   useEffect(() => {
     query();
@@ -29,18 +34,30 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <button onClick={query}>Refresh</button>
+      <div className={styles.container}>
+        <div className={styles.sidebar}>
+          <button onClick={query}>Refresh</button>
 
-      <ul>
-        {list?.map(({ title, date, url }, i) => (
-          <li key={i}>
-            <a href={url} target="_blank" rel="noreferrer">
-              <h3>{title}</h3>
-              <p>{date}</p>
-            </a>
-          </li>
-        ))}
-      </ul>
+          <ul className={styles.list}>
+            {list?.map(({ title, date, url, id }, i) => (
+              <li key={i}>
+                <div onClick={() => onClickItem(id)}>
+                  <h3>{title}</h3>
+                  <p>{date}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          {selectedUrl ? (
+            <iframe src={selectedUrl} width="100%" height="100%" />
+          ) : (
+            <p>Not Selected.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
