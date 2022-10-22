@@ -1,6 +1,8 @@
+import { BlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
+import NotionBlock from "../components/NotionBlock";
 import { useNotion } from "../hooks/useNotion";
 import styles from "../styles/Home.module.scss";
 import { PageItem } from "./api/pages";
@@ -8,7 +10,9 @@ import { PageItem } from "./api/pages";
 const Home: NextPage = () => {
   const { queryDatabase, retrievePage } = useNotion();
   const [list, setList] = useState<PageItem[]>([]);
-  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
+  const [pageContent, setPageContent] = useState<BlockObjectResponse[] | null>(
+    null
+  );
 
   const query = useCallback(async () => {
     const data = await queryDatabase();
@@ -20,6 +24,7 @@ const Home: NextPage = () => {
     // setSelectedUrl(url);
     const data = await retrievePage(pageId);
     console.log(data);
+    setPageContent(data);
   };
 
   useEffect(() => {
@@ -51,8 +56,8 @@ const Home: NextPage = () => {
         </div>
 
         <div>
-          {selectedUrl ? (
-            <iframe src={selectedUrl} width="100%" height="100%" />
+          {pageContent ? (
+            pageContent.map((block, i) => <NotionBlock key={i} block={block} />)
           ) : (
             <p>Not Selected.</p>
           )}

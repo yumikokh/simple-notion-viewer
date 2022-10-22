@@ -33,5 +33,5 @@ export default async function handler(
 
   res.setHeader("Content-Type", "application/json");
   res.writeHead(200);
-  res.end(JSON.stringify(query));
+  res.end(JSON.stringify(query.results));
 }
